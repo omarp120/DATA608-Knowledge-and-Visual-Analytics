@@ -1,6 +1,6 @@
 ---
 title: "DATA624 Knowledge and Visual Analytics Module 1"
-author: "Omar pineda"
+author: "Omar Pineda"
 output:
   html_document: default
   html_notebook: default
@@ -71,7 +71,7 @@ stateCount <- as.data.frame(table(inc$State))
 head(stateCount[order(-stateCount$Freq),])
 ```
 
-Next, we remove outliers and then calculate the average number of employees by industry for these NY companies. 
+Next, we remove outliers and also calculate the average number of employees by industry for these NY companies to get an idea of what numbers we're working with. Energy and Financial Services have the highest average number of employees.
 
 ```{r}
 #subsetting to NY companies and complete cases
@@ -87,19 +87,29 @@ ny <- ny[ny$Employees>lowerwhisker & ny$Employees<upperwhisker,]
 indavg <- ny %>%
     group_by(Industry) %>%
     dplyr::summarize(Mean = mean(Employees))
-head(indavg)
+indavg
 ```
 
-Lastly, we graph these industry averages. It seems like Financial Services and Energy have, on average, more employees amongst NY's fast growth companies.
+Lastly, we graph the distributions of employee counts for fast growth companies in New York by industry. It seems like Financial Services and Energy have, on average, more employees amongst NY's fast growth companies.
 
 ```{r}
-ggplot(indavg, aes(indavg$Industry, indavg$Mean)) +
-  geom_bar(stat="identity", fill = "#0073C2FF", width = 1) +
-  ylab("Average number of employees") +
+ggplot(ny, aes(ny$Industry, ny$Employees)) +
+  geom_boxplot() +
+  ylab("Number of employees") +
   xlab("Industry") +
-  ggtitle("Average number of employees for fast growth companies in NY by industry") +
+  ggtitle("Distribution of employees for fast growth companies in NY by industry") +
   theme(text=element_text(size=6), panel.grid.major = element_blank(), panel.grid.minor = element_blank(),panel.background = element_blank(), axis.line = element_line(colour = "black")) +
   coord_flip()
+```
+
+```{r}
+#ggplot(indavg, aes(indavg$Industry, indavg$Mean)) +
+#  geom_bar(stat="identity", fill = "#0073C2FF", width = 1) +
+#  ylab("Average number of employees") +
+#  xlab("Industry") +
+#  ggtitle("Average number of employees for fast growth companies in NY by industry") +
+#  theme(text=element_text(size=6), panel.grid.major = element_blank(), panel.grid.minor = #element_blank(),panel.background = element_blank(), axis.line = element_line(colour = "black")) +
+#  coord_flip()
 ```
 
 ## Question 3
@@ -114,16 +124,26 @@ ny$revenuebyemp <- ny$Revenue / ny$Employees
 indAvgRev <- ny %>%
     group_by(Industry) %>%
     dplyr::summarize(Mean = mean(revenuebyemp))
+indAvgRev
 ```
 
 Finally, we visualize these figures in a chart. Energy generates the most revenue per employee compared to other industries for fast growth companies in NY.
 
 ```{r}
-ggplot(indAvgRev, aes(indAvgRev$Industry, indAvgRev$Mean)) +
-  geom_bar(stat="identity", fill = "#0073C2FF", width = 1) +
+ggplot(ny, aes(ny$Industry, ny$revenuebyemp)) +
+  geom_boxplot() +
   ylab("Average revenue per employee") +
   xlab("Industry") +
   ggtitle("Average revenue per employee for fast growth companies in NY by industry") +
   theme(text=element_text(size=6), panel.grid.major = element_blank(), panel.grid.minor = element_blank(),panel.background = element_blank(), axis.line = element_line(colour = "black")) +
   coord_flip()
+```
+```{r}
+#ggplot(indAvgRev, aes(indAvgRev$Industry, indAvgRev$Mean)) +
+#  geom_bar(stat="identity", fill = "#0073C2FF", width = 1) +
+#  ylab("Average revenue per employee") +
+#  xlab("Industry") +
+#  ggtitle("Average revenue per employee for fast growth companies in NY by industry") +
+#  theme(text=element_text(size=6), panel.grid.major = element_blank(), panel.grid.minor = #element_blank(),panel.background = element_blank(), axis.line = element_line(colour = "black")) +
+#  coord_flip()
 ```
